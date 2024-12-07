@@ -17,6 +17,11 @@ public class PlayerController : MonoBehaviour
     public AudioClip barks;
     public AudioClip growl;
 
+    [Header ("Stato player")]
+    public float health = 10.0f;
+    public float humanHealthPlus = 10.0f;
+    public float childHealthMinus = 10.0f;
+
     //Variabili private
     private Rigidbody playerRb;
    
@@ -48,11 +53,74 @@ public class PlayerController : MonoBehaviour
 
         playerRb.AddForce(Vector3.right * speed * horizontalInput);
         playerRb.AddForce(Vector3.forward * speed * verticalInput);
+
+
     }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        //CONTATTI CON NPC//
+
+        //Contatto col CEO: vengo distrutto
+        if(collision.gameObject.CompareTag("Enemy"))
+        {
+
+            Debug.Log("Sei stato toccato dal CEO");
+            Destroy(gameObject);
+
+        }
+
+        //Contatto col gatto: randomicamente prendo o perdo punti con un valore random
+        if(collision.gameObject.CompareTag("Cat"))
+        {
+
+            Debug.Log("Hai colpito il gatto");
+
+        }
+        
+        //Contatto con umano: guadagno salute
+        if(collision.gameObject.CompareTag("Human"))
+        {
+
+            health = health + humanHealthPlus;
+            Debug.Log("Hai colpito un umano, hai guadagnato " + humanHealthPlus + "punti salute");
+
+        }
+
+        //Contatto con un bambino: perdo salute
+        if(collision.gameObject.CompareTag("Child"))
+        {
+
+            health = health - childHealthMinus;
+            Debug.Log("Hai colpito un bambino, hai perso " + childHealthMinus + "punti salute");
+
+        }
+
+        //Distruggo gli altri powerup
+        if(collision.gameObject.CompareTag("Powerup"))
+        {
+
+            Destroy(collision.gameObject);
+            Debug.Log("Hai preso un powerup");
+
+
+        }
+
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+
+
+
+
+    }
+
 
     void Actions()
     {
-
 
         //Space = bark
         //bark = abbaio per tenere lontani i bambini
